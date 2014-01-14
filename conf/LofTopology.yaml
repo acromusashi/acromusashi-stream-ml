@@ -1,0 +1,47 @@
+## LofTopology Sample Config
+## NimbusHost
+## Set StormCluster's Nimbus Host
+nimbus.host        : 126.0.1.153
+## NimbusPort
+nimbus.thrift.port : 6627
+## WorkerProcess Number
+topology.workers   : 3
+## parallelismHint ThreadNum
+topology.parallelismHint   :   1
+## Storm Debug Flag
+topology.debug     : true
+
+## TopologyDefine
+## Spout Settings
+transactional.zookeeper.servers :
+  - "rtml01"
+  - "rtml02"
+  - "rtml03"
+
+transactional.zookeeper.port : 2181
+
+## Spout
+lof.datafilepath     : "/opt/acromusashi-stream-ml/"
+lof.datafilebasename : "Lof.txt"
+lof.datafilereload   : true
+lof.maxbatchsize     : 50
+
+## StateFactory
+lof.target.uri       : "rtml01:11222;rtml02:11222;rtml03:11222"
+lof.tablename        : "default"
+lof.state.base.name  : "LOF"
+lof.merge.interval.secs : 30
+lof.lifespan.secs    : 30
+
+## Creator
+lof.delimeter        : " "
+
+## Updater
+lof.has.intermediate    : true
+lof.always.update.model : false
+lof.update.interval     : 33
+lof.kn                  : 13
+lof.min.data.count      : 10
+lof.max.data.count      : 100
+lof.notify.threshold    : 0.01
+
