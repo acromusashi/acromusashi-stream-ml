@@ -42,9 +42,6 @@
                 <!-- Stormと重複する依存ライブラリを除去 -->
                 <exclude>commons-lang:commons-lang</exclude>
                 <exclude>commons-logging:commons-logging</exclude>
-                <exclude>com.google.guava:guava</exclude>
-                <exclude>org.mortbay.jetty:jetty</exclude>
-                <exclude>org.mortbay.jetty:jetty-util</exclude>
                 <!-- Stormと重複する依存ライブラリを除去 -->
             </excludes>
         </dependencySet>
