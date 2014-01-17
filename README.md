@@ -1,6 +1,8 @@
 ## 概要
-acromusashi-stream-mlは、acromusashi-streamをベースとした、ビッグデータをリアルタイム機械学習するためのプラットフォームです。  
-acromusashi-stream-mlを使用することで、Storm上で機械学習アルゴリズムをリアルタイムで動作させることができます。  
+acromusashi-stream-mlは、acromusashi-streamをベースとした、  
+ビッグデータをリアルタイム機械学習するためのプラットフォームです。  
+acromusashi-stream-mlを使用することで、Storm上で機械学習アルゴリズムを  
+リアルタイムで動作させることができます。   
 
 ## システム構成イメージ
 ![Abstract Image](http://acromusashi.github.io/acromusashi-stream-ml/images/MlAbstract.png)
