@@ -6,7 +6,10 @@ acromusashi-stream-mlを使用することで、Storm上で機械学習アルゴ
 
 ## システム構成イメージ
 ![Abstract Image](http://acromusashi.github.io/acromusashi-stream-ml/images/MlAbstract.png)
-
+#### Infinispan
+acromusashi-stream-mlでは[Infinispan](http://infinispan.org/)を学習データのキャッシュ先として用いています。  
+Infinispanはメモリ上でデータを保持する分散KVSデータグリッドで、データへの高速なアクセスが可能です。  
+Infinispanのインストール方法／利用方法については[Infinispanの利用方法](https://github.com/acromusashi/acromusashi-stream-example/wiki/Infinispan-Usage)を確認してください。  
 ## スタートガイド
 ### ビルド環境
 * JDK 7以降  
