@@ -11,23 +11,22 @@ acromusashi-stream-mlでは[Infinispan](http://infinispan.org/)を学習デー�
 Infinispanはメモリ上でデータを保持する分散KVSデータグリッドで、データへの高速なアクセスが可能です。  
 Infinispanのインストール方法／利用方法については[Infinispanの利用方法](https://github.com/acromusashi/acromusashi-stream-example/wiki/Infinispan-Usage)を確認してください。  
 ## スタートガイド
-### ビルド環境
-* JDK 7以降  
-* Maven 2.2.1以降
+### Integration
+```xml
+<dependency>
+  <groupId>jp.co.acroquest.acromusashi</groupId>
+  <artifactId>acromusashi-stream-ml</artifactId>
+  <version>0.2.0</version>
+</dependency>
+``` 
 
-### ビルド手順
-* ソースをGitHubから取得後、取得先ディレクトリに移動し下記のコマンドを実行してください。  
-** コマンド実行の結果、 acromusashi-stream-ml.zip が生成されます。  
-
-```
-# mvn clean package  
-```  
-
-## アルゴリズム一覧
+## 機械学習API
 ### クラスタリング
 #### KMeans++
 acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することで  
 KMeans++アルゴリズムを用いたクラスタリングを行うことができます。  
+KmeansUpdaterにdataNotifierを設定することで1データ処理するごとに追加処理を実行可能です。  
+batchNotifierを設定することで1バッチ分データ処理するごとに追加処理を実行可能です。   
 実装例は[KmeansTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/KmeansTopology.java)を確認してください。  
 ### 外れ値検知
 #### LOF
