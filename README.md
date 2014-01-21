@@ -24,7 +24,7 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 
 ## 機械学習API
 
-現在は、以下のアルゴリズムをサポートしています
+現在は、以下のアルゴリズムをサポートしています。
 
 - クラスタリング
  - 教師なし学習（KMeans++）
@@ -35,8 +35,7 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 ### クラスタリング
 
 #### KMeans++
-acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することで  
-KMeans++アルゴリズムを用いたクラスタリングを行うことができます。  
+acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することでKMeans++アルゴリズムを用いたクラスタリングを行うことができます。  
 KmeansUpdaterにdataNotifierを設定することで1データ処理するごとに追加処理を実行可能です。  
 batchNotifierを設定することで1バッチ分データ処理するごとに追加処理を実行可能です。   
 実装例は[KmeansTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/KmeansTopology.java)を確認してください。  
@@ -44,13 +43,11 @@ batchNotifierを設定することで1バッチ分データ処理するごとに
 ### 異常値
 
 #### LOF
-acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することで  
-LOFアルゴリズムを用いた外れ値検知を行うことができます。  
+acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することでLOFアルゴリズムを用いた外れ値検知を行うことができます。  
 実装例は[LofTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/LofTopology.java)を確認してください。
 
 #### ChangeFinder
-acromusashi.stream.ml.anomaly.cf パッケージ配下のコンポーネントを使用することで  
-ChangeFinderアルゴリズムを用いた変化点検出を行うことができます。  
+acromusashi.stream.ml.anomaly.cf パッケージ配下のコンポーネントを使用することでChangeFinderアルゴリズムを用いた変化点検出を行うことができます。  
 実装例は[EndoSnipeTridentTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/EndoSnipeTridentTopology.java)を確認してください。
 
 ## Javadoc
