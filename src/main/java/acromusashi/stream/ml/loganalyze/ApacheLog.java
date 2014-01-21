@@ -15,6 +15,7 @@ package acromusashi.stream.ml.loganalyze;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -77,6 +78,10 @@ public class ApacheLog implements Serializable
     public static ApacheLog add(ApacheLog logA, ApacheLog logB)
     {
         String key = logA.getKey();
+        if (StringUtils.isEmpty(key) == true)
+        {
+            key = logB.getKey();
+        }
         long countSum = logA.getCount() + logB.getCount();
         long sizeSum = logA.getSizeSum() + logB.getSizeSum();
         long timeSum = logA.getTimeSum() + logB.getTimeSum();
