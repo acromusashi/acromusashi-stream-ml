@@ -34,7 +34,7 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 
 ### クラスタリング
 
-#### KMeans++
+#### 教師なし学習（KMeans++）
 acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することでKMeans++アルゴリズムを用いたクラスタリングを行うことができます。  
 KmeansUpdaterにdataNotifierを設定することで1データ処理するごとに追加処理を実行可能です。  
 batchNotifierを設定することで1バッチ分データ処理するごとに追加処理を実行可能です。   
@@ -42,13 +42,60 @@ batchNotifierを設定することで1バッチ分データ処理するごとに
 
 ### 異常値
 
-#### LOF
-acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することでLOFアルゴリズムを用いた外れ値検知を行うことができます。  
+#### 外れ値検出（LOF:Local Outlier Factor）
+acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することでLOFアルゴリズムを用いた外れ値検出を行うことができます。  
 実装例は[LofTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/LofTopology.java)を確認してください。
 
-#### ChangeFinder
+#### 変化点検出（ChangeFinder）
 acromusashi.stream.ml.anomaly.cf パッケージ配下のコンポーネントを使用することでChangeFinderアルゴリズムを用いた変化点検出を行うことができます。  
-実装例は[EndoSnipeTridentTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/EndoSnipeTridentTopology.java)を確認してください。
+
+
+詳細は[変化点検出（ChangeFinder）機能]を確認してください。
+##### 実装例
+```java
+// TridentKafkaSpoutを初期化
+// Kafkaの接続先ZooKeeperのサーバアドレスとZooKeeper上のパスを定義
+ZkHosts zkHosts = new ZkHosts("192.168.0.1:2181,192.168.0.2:2181,192.168.0.3:2181", "/brokers");
+// Kafka上のTopic(キュー名称)と利用者IDを定義
+TridentKafkaConfig kafkaConfig = new TridentKafkaConfig(zkHosts, "ApacheLog", "ChangeFindTopology");
+// デシリアライズ方式を設定
+kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
+OpaqueTridentKafkaSpout tridentKafkaSpout = new OpaqueTridentKafkaSpout(kafkaConfig);
+
+// ApacheLogSplitFunctionを初期化
+ApacheLogSplitFunction apacheLogSplitFunction = new ApacheLogSplitFunction();
+// 読みこむ際の時刻フォーマットを指定
+apacheLogSplitFunction.setDateFormatStr("yyyy-MM-dd'T'HH:mm:SSSZ");
+
+// ChangeFindFunctionを初期化
+ChangeFindFunction cfFunction = new ChangeFindFunction();
+// 自己回帰モデルの次数「k」を設定
+cfFunction.setArDimensionNum(4);
+// オンライン忘却パラメータ「r」を設定
+cfFunction.setForgetability(0.05d);
+// 平滑化ウィンドウサイズ「T」を設定
+cfFunction.setSmoothingWindow(5);
+// 変化点として検出するスコア閾値を設定
+cfFunction.setScoreThreshold(15.0d);
+
+TridentTopology topology = new TridentTopology();
+
+// 以下の順でTridentTopologyにSpout/Functionを登録する。
+// 1.TridentKafkaSpout:KafkaからApacheログ(JSON形式)を取得
+// 2.ApacheLogSplitFunction:受信したApacheログ(JSON形式)をエンティティに変換し、送信
+// 3.ChangeFindFunction:受信したApacheログのレスポンスタイムを用いて変化点スコアを算出
+// 4.ApacheLogAggregator:受信したApacheログの統計値を算出
+// 5.ResultPrintFunction:受信した統計値をログ出力
+topology.newStream("TridentKafkaSpout", tridentKafkaSpout).parallelismHint(parallelism)
+    .each(new Fields("str"), apacheLogSplitFunction, new Fields("IPaddress", "responseTime"))
+    .groupBy(new Fields("IPaddress"))
+    .each(new Fields("IPaddress", "responseTime"), cfFunction, new Fields("webResponse"))
+    .partitionAggregate(new Fields("webResponse"), new CombinerAggregatorCombineImpl(new ApacheLogAggregator()), new Fields("average"))
+    .each(new Fields("average"), new ResultPrintFunction(), new Fields("count"));
+
+// Topology内でTupleに設定するエンティティをシリアライズ登録
+this.config.registerSerialization(ApacheLog.class);
+```
 
 ## Javadoc
 [Javadoc](http://acromusashi.github.io/acromusashi-stream-ml/javadoc-0.2.0/)
