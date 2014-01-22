@@ -3,7 +3,7 @@ acromusashi-stream-ml は、[acromusashi-stream](https://github.com/acromusashi/
 acromusashi-stream-ml を利用することで、機械学習の処理を[Storm](http://storm-project.net/)上でリアルタイムで動作させることができます
 
 ## システム構成イメージ
-
+![Abstract Image](http://acromusashi.github.io/acromusashi-stream-ml/images/MlAbstract.png)
 
 #### Infinispan
 acromusashi-stream-ml では[Infinispan](http://infinispan.org/)を学習データのキャッシュ先として用いています。  
