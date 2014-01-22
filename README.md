@@ -48,7 +48,13 @@ acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネント�
 
 #### 変化点検出（ChangeFinder）
 acromusashi.stream.ml.anomaly.cf パッケージ配下のコンポーネントを使用することでChangeFinderアルゴリズムを用いた変化点検出を行うことができます。  
+変化点検出機能は以下のコンポーネントを保持しています。  
+- [ChangeFinder](./src/main/java/acromusashi/stream/ml/anomaly/cf/ChangeFinder.java) : 変化点検出を行うコアコンポーネント  
 
+変化点検出機能を利用するTrident用コンポーネントとして以下のコンポーネントがあります。
+- [ApacheLogSplitFunction](./src/main/java/acromusashi/stream/ml/loganalyze/ApacheLogSplitFunction.java) : JSON形式のApacheのログをEntityに変換するコンポーネント  
+- [ChangeFindFunction](./src/main/java/acromusashi/stream/ml/loganalyze/ChangeFindFunction.java) : Apacheのログのレスポンスタイムに対して変化点検出を行うコンポーネント  
+- [ApacheLogAggregator](./src/main/java/acromusashi/stream/ml/loganalyze/ApacheLogAggregator.java) : ApacheのログのEntityの統計を算出するコンポーネント  
 
 詳細は[変化点検出（ChangeFinder）機能]を確認してください。
 ##### 実装例
