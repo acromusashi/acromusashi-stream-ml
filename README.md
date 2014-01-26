@@ -46,12 +46,111 @@ batchNotifierを設定することで1バッチ分データ処理するごとに
 
 #### 外れ値検出（LOF:Local Outlier Factor）
 acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することでLOFアルゴリズムを用いた外れ値検出を行うことができます。  
-実装例は[LofTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/LofTopology.java)を確認してください。
+
+##### 実装例[(LofTopology)](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/LofTopology.java)
+ここでは、ファイルから点データを読み込み、外れ値スコアの算出を行う例を示します。
+```java
+// 状態マージ用設定生成
+Map<String, Object> mergeConfig = new HashMap<>();
+// 中間データ保持フラグを設定
+mergeConfig.put(LofConfKey.HAS_INTERMEDIATE, true);
+// K値を設定
+mergeConfig.put(LofConfKey.KN, 10);
+// 最大で保持する過去データ数を設定
+mergeConfig.put(LofConfKey.MAX_DATA_COUNT, 300);
+
+// 学習データ読込Spoutを初期化
+TextReadBatchSpout spout = new TextReadBatchSpout();
+// 学習データの配置パスを設定
+spout.setDataFilePath("/opt/acromusashi-stream-ml/lof/");
+// 学習データファイルのベース名称を設定
+spout.setBaseFileName("LOFModel.txt");
+// 学習データの再読み込みを行うかのフラグを設定
+spout.setFileReload(true);
+// 学習データのバッチサイズを設定
+spout.setMaxBatchSize(100);
+
+// Creatorを初期化
+LofPointCreator creator = new LofPointCreator();
+// 学習データ生成時の区切り文字を設定
+creator.setDelimeter(",");
+
+// InfinispanStateFactoryを初期化
+InfinispanLofStateFactory stateFactory = new InfinispanLofStateFactory();
+// In-Memory DBのホストを設定
+stateFactory.setTargetUri("192.168.0.1:11222;192.168.0.2:11222;192.168.0.3:11222");
+// In-Memory DB上のキャッシュ名称を設定
+stateFactory.setTableName("LOFCache");
+// 学習データのマージ間隔を設定
+stateFactory.setMergeInterval(300);
+// In-Memory DB上での学習データの保持期間を設定
+stateFactory.setLifespan(3600);
+// 状態マージ用設定を設定
+stateFactory.setMergeConfig(mergeConfig);
+
+// LofUpdaterを初期化
+LofUpdater updater = new LofUpdater();
+// データを受信した際に学習モデルの常時アップデートを行うかのフラグを設定
+updater.setAlwaysUpdateModel(false);
+// 中間データ保持フラグを設定
+updater.setHasIntermediate(true);
+// データを受信した際に学習モデルのアップデートを行う間隔を設定
+updater.setUpdateInterval(100);
+// K値を設定
+updater.setKn(10);
+// 判定を行う際に必要となる最小データ数を設定
+updater.setMinDataCount(10);
+// 最大で保持する過去データ数を設定
+updater.setMaxDataCount(300);
+// In-Memory DB上のベース名称を設定
+updater.setStateName("Lof");
+
+// 1データ処理するごとに追加処理を行うDataNotifierを設定
+LofResultPrinter printer = new LofResultPrinter(threshold);
+updater.setDataNotifier(printer);
+// 1バッチ処理するごとに追加処理を行うBatchNotifierを設定
+LofModelPrinter modelPrinter = new LofModelPrinter();
+updater.setBatchNotifier(modelPrinter);
+
+// StateQueryを初期化(In-Memory DB上のベース名称、K値、中間データ保持フラグを設定)
+LofQuery lofQuery = new LofQuery("Lof", 10, true);
+
+TridentTopology topology = new TridentTopology();
+
+// 学習Stream
+// 以下の順でTridentTopologyにSpout/Functionを登録する。
+// 1.TextReadBatchSpout:指定されたファイルを読み込み、1行を1メッセージとして送信
+// 2.LofPointCreator:受信したメッセージで受信した文字列を区切り文字で分割し、各要素をdoubleの配列としてLOFの点を生成し、送信
+// 3.LofUpdater:受信したLOFの点のリストを用いて学習モデルを更新し、Infinispanに保存する
+TridentState lofState = topology.newStream("TextReadBatchSpout", spout)
+    .each(new Fields("text"), creator, new Fields("lofpoint"))
+    .partitionPersist(stateFactory, new Fields("lofpoint"), updater)
+    .parallelismHint(parallelism);
+
+// 評価Stream
+// 1.DRPCStream:DRPCリクエストを受信し、その際に指定された引数をメッセージとして送信
+// 2.LofPointCreator:受信したメッセージで受信した文字列を区切り文字で分割し、各要素をdoubleの配列としてLOFの点を生成し、送信
+// 3.LofQuery:受信したLOFの点に対してスコア算出を行い、結果をDRPCクライアントに返信
+topology.newDRPCStream("lof")
+    .each(new Fields("args"), creator, new Fields("instance"))
+    .stateQuery(lofState, new Fields("instance"), lofQuery, new Fields("result"));
+
+// Topology内でTupleに設定するエンティティをシリアライズ登録
+this.config.registerSerialization(LofPoint.class);
+this.config.registerSerialization(Date.class);
+```
+外れ値検出を行う主要なコンポーネントには、以下のようなものがあります。
+
+|クラス|説明|
+|:--|:--|
+|[LofPointCreator](./src/main/java/acromusashi/stream/ml/anomaly/lof/LofPointCreator.java)|テキストデータを変換し、LOF判定用のエンティティに変換します。|
+|[LofUpdater](./src/main/java/acromusashi/stream/ml/anomaly/lof/LofUpdater.java)|LOFの学習データをIn-Memory DBから取得して外れ値検出を行い、結果をIn-Memory DBに保存します。|
+|[LofQuery](./src/main/java/acromusashi/stream/ml/anomaly/lof/LofQuery.java)|LOFの学習データをIn-Memory DBから取得して外れ値検出を行い、結果を評価ストリームに返します。|
 
 #### 変化点検出（ChangeFinder）
 acromusashi.stream.ml.anomaly.cf パッケージ配下のコンポーネントを使用することでChangeFinderアルゴリズムを用いた変化点検出を行うことができます。  
 
-##### 実装例[(ChangeFindTopology)](./src/main/java/acromusashi/stream/example/ml/topology/ChangeFindTopology.java)
+##### 実装例[(ChangeFindTopology)](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/ChangeFindTopology.java)
 ここでは、Apacheのログを解析し、レスポンスタイムの異常を検知する例を示します。
 ```java
 // TridentKafkaSpoutを初期化
