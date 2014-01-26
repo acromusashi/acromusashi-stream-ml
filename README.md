@@ -38,9 +38,85 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 
 #### 教師なし学習（KMeans++）
 acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することでKMeans++アルゴリズムを用いたクラスタリングを行うことができます。  
-KmeansUpdaterにdataNotifierを設定することで1データ処理するごとに追加処理を実行可能です。  
-batchNotifierを設定することで1バッチ分データ処理するごとに追加処理を実行可能です。   
-実装例は[KmeansTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/KmeansTopology.java)を確認してください。  
+
+##### 実装例[(KmeansTopology)](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/KmeansTopology.java)
+ここでは、学習ストリームとしてファイルから点データを読み込み、評価ストリームからクラスタリング結果を返す例を示します。
+```java
+// 学習データ読込Spoutを初期化
+WatchTextBatchSpout spout = new WatchTextBatchSpout();
+// 学習データの配置パスを設定
+spout.setDataFilePath("/opt/acromusashi-stream-ml/kmeans/");
+// 学習データファイルのベース名称を設定
+spout.setBaseFileName("KMeansModel.txt");
+
+// Creatorを初期化
+KmeansCreator creator = new KmeansCreator();
+// 学習データ生成時の区切り文字を設定
+creator.setDelimeter(",");
+
+// InfinispanStateFactoryを初期化
+InfinispanKmeansStateFactory stateFactory = new InfinispanKmeansStateFactory();
+// In-Memory DBのホストを設定
+stateFactory.setServers("192.168.0.1:11222;192.168.0.2:11222;192.168.0.3:11222");
+// In-Memory DB上のキャッシュ名称を設定
+stateFactory.setCacheName("KMeansCache");
+// 学習データのマージ間隔を設定
+stateFactory.setMergeInterval(3600);
+// In-Memory DB上での学習データの保持期間を設定
+stateFactory.setLifespan(86400);
+
+// Updaterを初期化
+KmeansUpdater updater = new KmeansUpdater();
+// In-Memory DB上のベース名称を設定
+updater.setStateName("KMeans");
+// クラスタ数を設定
+updater.setClusterNum(4);
+
+// 1データ処理するごとに追加処理を行うDataNotifierを設定
+DebugLogPrinter<KmeansResult> resultPrinter = new DebugLogPrinter<>("KmeansResult=");
+updater.setDataNotifier(resultPrinter);
+// 1バッチ処理するごとに追加処理を行うBatchNotifierを設定
+DebugLogPrinter<KmeansDataSet> modelPrinter = new DebugLogPrinter<>("KmeansDataSet=");
+updater.setBatchNotifier(modelPrinter);
+
+// StateQueryを初期化(In-Memory DB上のベース名称を設定)
+KmeansQuery kmeansQuery = new KmeansQuery(stateBaseName);
+
+TridentTopology topology = new TridentTopology();
+
+// 学習Stream
+// 以下の順でTridentTopologyにSpout/Functionを登録する。
+// 1.TextReadBatchSpout:指定されたファイルを読み込み、1行を1メッセージとして送信
+// 2.KmeansCreator:受信したメッセージで受信した文字列を区切り文字で分割し、各要素をdoubleの配列としてKMeansの点を生成し、送信
+// 3.KmeansUpdater:受信したKMeansの点のリストを用いて学習モデルを更新し、Infinispanに保存する
+TridentState kmeansState = topology.newStream("TextReadBatchSpout", spout)
+    .each(new Fields("text"), creator, new Fields("kmeanspoint"))
+    .partitionPersist(stateFactory, new Fields("kmeanspoint"), updater)
+    .parallelismHint(parallelism);
+
+// 評価Stream
+// 1.DRPCStream:DRPCリクエストを受信し、その際に指定された引数をメッセージとして送信
+// 2.KmeansCreator:受信したメッセージで受信した文字列を区切り文字で分割し、各要素をdoubleの配列としてKMeansの点を生成し、送信
+// 3.KmeansQuery:受信したKmeansの点に対してクラスタリングを行い、下記の情報を結果としてDRPCクライアントに返信
+//   a.クラスタリングされたクラスタID
+//   b.クラスタリングされたクラスタIDの中心点
+//   c.投入したデータと中心点の距離
+topology.newDRPCStream("KMeans")
+    .each(new Fields("args"), creator, new Fields("instance"))
+    .stateQuery(kmeansState, new Fields("instance"), kmeansQuery, new Fields("result"));
+
+// Topology内でTupleに設定するエンティティをシリアライズ登録
+this.config.registerSerialization(KmeansPoint.class);
+```
+教師なし学習を行う主要なコンポーネントには、以下のようなものがあります。
+
+|クラス|説明|
+|:--|:--|
+|[KmeansCreator](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansCreator.java)|テキストデータを変換し、KMeansクラスタリング用のエンティティに変換します。|
+|[KmeansUpdater](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansUpdater.java)|KMeansクラスタリングの学習データをIn-Memory DBから取得して教師なし学習を行い、結果をIn-Memory DBに保存します。|
+|[KmeansQuery](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansQuery.java)|KMeansクラスタリングの学習データをIn-Memory DBから取得してクラスタリングを行い、結果を評価ストリームに返します。|
+
+
 
 ### 異常値検知
 
