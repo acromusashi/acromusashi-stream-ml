@@ -42,7 +42,7 @@ KmeansUpdaterにdataNotifierを設定することで1データ処理するごと
 batchNotifierを設定することで1バッチ分データ処理するごとに追加処理を実行可能です。   
 実装例は[KmeansTopology](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/KmeansTopology.java)を確認してください。  
 
-### 異常値
+### 異常値検出
 
 #### 外れ値検出（LOF:Local Outlier Factor）
 acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することでLOFアルゴリズムを用いた外れ値検出を行うことができます。  
