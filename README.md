@@ -48,7 +48,7 @@ batchNotifierを設定することで1バッチ分データ処理するごとに
 acromusashi.stream.ml.anomaly.lof パッケージ配下のコンポーネントを使用することでLOFアルゴリズムを用いた外れ値検出を行うことができます。  
 
 ##### 実装例[(LofTopology)](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/LofTopology.java)
-ここでは、ファイルから点データを読み込み、外れ値スコアの算出を行う例を示します。
+ここでは、学習ストリームとしてファイルから点データを読み込み、評価ストリームから外れ値スコアの算出を行う例を示します。
 ```java
 // 状態マージ用設定生成
 Map<String, Object> mergeConfig = new HashMap<>();
