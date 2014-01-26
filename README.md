@@ -1,15 +1,15 @@
 ## 概要
-AcroMUSASHI Stream - Machine Learning Library は、[acromusashi-stream](https://github.com/acromusashi/acromusashi-stream) をベースとした、オンライン機械学習を行うためのライブラリです。AcroMUSASHI Stream - Machine Learning Library を利用することで、機械学習の処理を[Storm](http://storm-project.net/)上でリアルタイムで動作させることができます。
+AcroMUSASHI Stream-ML（Machine Learning Library）  は、[AcroMUSASHI Stream](https://github.com/acromusashi/acromusashi-stream) をベースとした、オンライン機械学習を行うためのライブラリです。AcroMUSASHI Stream-MLを利用することで、機械学習の処理を[Storm](http://storm-project.net/)上でリアルタイムで動作させることができます。
 
 ## システム構成イメージ
 ![Abstract Image](http://acromusashi.github.io/acromusashi-stream-ml/images/MlAbstract.png)
 
 #### Storm Trident Topology
-AcroMUSASHI Stream - Machine Learning Library は、StormのTrident機能を利用して実現しています。  
+AcroMUSASHI Stream-ML は、StormのTrident機能を利用して実現しています。  
 Tridentに関しては、[Trident tutorial](https://github.com/nathanmarz/storm/wiki/Trident-tutorial)を参照してください。
 
 #### In-MemoryDB
-AcroMUSASHI Stream - Machine Learning Library  では[Infinispan](http://infinispan.org/)を学習データのキャッシュ先として用いています。Infinispanはメモリ上でデータを保持する分散KVSデータグリッドで、データへの高速なアクセスが可能です。  
+AcroMUSASHI Stream-ML では[Infinispan](http://infinispan.org/)を学習データのキャッシュ先として用いています。Infinispanはメモリ上でデータを保持する分散KVSデータグリッドで、データへの高速なアクセスが可能です。  
 Infinispanのインストール方法／利用方法については[Infinispanの利用方法](https://github.com/acromusashi/acromusashi-stream-example/wiki/Infinispan-Usage)を確認してください。  
 
 ## スタートガイド
@@ -28,11 +28,11 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 
 現在は、以下のアルゴリズムをサポートしています。
 
-- クラスタリング
- - 教師なし学習（KMeans++）
-- 異常値
- - 外れ値検出（LOF:Local Outlier Factor）
- - 変化点検出（ChangeFinder）
+- [クラスタリング](#クラスタリング)
+ - [教師なし学習（KMeans++）](#教師なし学習kmeans)
+- [異常値検知](#異常値検知)
+ - [外れ値検出（LOF:Local Outlier Factor）](#外れ値検出loflocal-outlier-factor)
+ - [変化点検出（ChangeFinder）](#変化点検出changefinder)
 
 ### クラスタリング
 
