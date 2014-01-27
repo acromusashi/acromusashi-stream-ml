@@ -29,15 +29,15 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 現在は、以下のアルゴリズムをサポートしています。
 
 - [クラスタリング](#クラスタリング)
- - [教師なし学習（KMeans++）](#教師なし学習kmeans)
+ - [K-means](#k-means)
 - [異常値検知](#異常値検知)
  - [外れ値検出（LOF:Local Outlier Factor）](#外れ値検出loflocal-outlier-factor)
  - [変化点検出（ChangeFinder）](#変化点検出changefinder)
 
 ### クラスタリング
 
-#### 教師なし学習（KMeans++）
-acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することでKMeans++アルゴリズムを用いたクラスタリングを行うことができます。  
+#### K-means
+acromusashi.stream.ml.clustering.kmeans パッケージ配下のコンポーネントを使用することでK-meansアルゴリズムを用いたクラスタリングを行うことができます。  
 
 ##### 実装例[(KmeansTopology)](https://github.com/acromusashi/acromusashi-stream-example/blob/master/src/main/java/acromusashi/stream/example/ml/topology/KmeansTopology.java)
 ここでは、学習ストリームとしてファイルから点データを読み込み、評価ストリームからクラスタリング結果を返す例を示します。
@@ -112,9 +112,9 @@ this.config.registerSerialization(KmeansPoint.class);
 
 |クラス|説明|
 |:--|:--|
-|[KmeansCreator](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansCreator.java)|テキストデータを変換し、KMeansクラスタリング用のエンティティに変換します。|
-|[KmeansUpdater](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansUpdater.java)|KMeansクラスタリングの学習データをIn-Memory DBから取得して教師なし学習を行い、結果をIn-Memory DBに保存します。|
-|[KmeansQuery](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansQuery.java)|KMeansクラスタリングの学習データをIn-Memory DBから取得してクラスタリングを行い、結果を評価ストリームに返します。|
+|[KmeansCreator](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansCreator.java)|テキストデータを変換し、K-meansクラスタリング用のエンティティに変換します。|
+|[KmeansUpdater](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansUpdater.java)|K-meansクラスタリングの学習データをIn-Memory DBから取得して教師なし学習を行い、結果をIn-Memory DBに保存します。|
+|[KmeansQuery](./src/main/java/acromusashi/stream/ml/clustering/kmeans/KmeansQuery.java)|K-meansクラスタリングの学習データをIn-Memory DBから取得してクラスタリングを行い、結果を評価ストリームに返します。|
 
 
 
