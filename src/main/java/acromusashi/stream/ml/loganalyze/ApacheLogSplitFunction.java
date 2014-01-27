@@ -146,6 +146,10 @@ public class ApacheLogSplitFunction extends BaseFunction
         {
             recordedTime = this.javaDateFormat.parse(recordedTimeStr);
         }
+        else
+        {
+            recordedTime = new Date();
+        }
 
         ApacheLog result = new ApacheLog(serverName, 1, size, time, recordedTime, 0d);
         return result;
