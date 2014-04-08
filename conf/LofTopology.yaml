@@ -1,7 +1,7 @@
 ## LofTopology Sample Config
 ## NimbusHost
 ## Set StormCluster's Nimbus Host
-nimbus.host        : 126.0.1.153
+nimbus.host        : nimbushost
 ## NimbusPort
 nimbus.thrift.port : 6627
 ## WorkerProcess Number
@@ -14,9 +14,9 @@ topology.debug     : true
 ## TopologyDefine
 ## Spout Settings
 transactional.zookeeper.servers :
-  - "rtml01"
-  - "rtml02"
-  - "rtml03"
+  - "zookeeper01"
+  - "zookeeper02"
+  - "zookeeper03"
 
 transactional.zookeeper.port : 2181
 
@@ -27,7 +27,7 @@ lof.datafilereload   : true
 lof.maxbatchsize     : 50
 
 ## StateFactory
-lof.target.uri       : "rtml01:11222;rtml02:11222;rtml03:11222"
+lof.target.uri       : "infinispan01:11222;infinispan02:11222;infinispan03:11222"
 lof.tablename        : "default"
 lof.state.base.name  : "LOF"
 lof.merge.interval.secs : 30

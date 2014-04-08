@@ -1,13 +1,13 @@
 ## DataStoreTopology Sample Config
 ## NimbusHost
 ## Set StormCluster's Nimbus Host
-nimbus.host        : 126.0.1.153
+nimbus.host        : nimbushost
 ## NimbusPort
 nimbus.thrift.port : 6627
 ## WorkerProcess Number
 topology.workers   : 3
 ## parallelismHint ThreadNum
-topology.parallelismHint   :   3
+topology.parallelismHint   :   1
 ## Storm Debug Flag
 topology.debug     : true
 
@@ -15,13 +15,13 @@ topology.debug     : true
 ## Spout Settings
 drpc.function           : kmeansState
 drpc.servers            :
-  - 126.0.1.153
+  - nimbushost
 drpc.invocations.port   : 3773
 
 ## transactional.zookeeper.servers :
-##   - "rtml01"
-##   - "rtml02"
-##   - "rtml03"
+##   - "zookeeper01"
+##   - "zookeeper02"
+##   - "zookeeper03"
 ## 
 ## transactional.zookeeper.port : 2181
 
@@ -33,18 +33,9 @@ kmeans.maxbatchsize     : 50
 kmeans.clusternum       : 5
 kmeans.parallelism      : 2
 
-kmeans.stateservers     : "rtml01:11222;rtml02:11222;rtml03:11222"
+kmeans.stateservers     : "infinispan01:11222;infinispan02:11222;infinispan03:11222"
 kmeans.cachename        : "default"
 kmeans.statebasename    : "KMeans"
 
 kmeans.merge.interval.secs : 5
 kmeans.lifespan.secs       : 30
-
-## KMeanクラスタリングのモデル中心点定義
-## 「kmeans.model.centroids」のArray要素1個を1中心点とし、座標をカンマで区切って記述
-kmeans.model.centroids  :
-  - "0.00000000,0.00000000,0.00000000,0.00000000"
-  - "1.00000000,0.00000000,0.00000000,0.00000000" 
-  - "0.50000000,0.86602540,0.00000000,0.00000000" 
-  - "0.50000000,0.28867513,0.81649658,0.00000000"
-  - "0.50000000,0.28867513,0.20412415,0.79056942"
