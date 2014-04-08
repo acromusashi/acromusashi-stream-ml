@@ -75,8 +75,8 @@
     <jdk.version>1.7</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <site.encoding>UTF-8</site.encoding>
-    <storm.version>0.9.0-rc2</storm.version>
-    <infinispan.version>6.0.0.Final</infinispan.version>
+    <storm.version>0.9.1-incubating</storm.version>
+    <infinispan.version>6.0.2.Final</infinispan.version>
     <jacoco.include.package>acromusashi.stream.ml.*</jacoco.include.package>
   </properties>
 
@@ -136,7 +136,7 @@
     <dependency>
       <groupId>jp.co.acroquest.acromusashi</groupId>
       <artifactId>acromusashi-stream</artifactId>
-      <version>0.5.0</version>
+      <version>0.5.1</version>
       <exclusions>
         <exclusion>
           <groupId>storm</groupId>
@@ -195,8 +195,8 @@
 
     <!-- Storm -->
     <dependency>
-      <groupId>storm</groupId>
-      <artifactId>storm</artifactId>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-core</artifactId>
       <version>${storm.version}</version>
       <!-- Storm本体は実行環境で提供 -->
       <scope>provided</scope>
