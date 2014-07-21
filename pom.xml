@@ -4,7 +4,7 @@
   <name>acromusashi-stream-ml</name>
   <groupId>jp.co.acroquest.acromusashi</groupId>
   <artifactId>acromusashi-stream-ml</artifactId>
-  <version>0.2.1</version>
+  <version>0.2.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Realtime Big Data Platform</description>
   <url>https://github.com/acromusashi</url>
