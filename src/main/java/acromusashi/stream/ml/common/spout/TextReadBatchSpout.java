@@ -76,7 +76,7 @@ public class TextReadBatchSpout implements IBatchSpout
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     @Override
     public void open(Map conf, TopologyContext context)
     {

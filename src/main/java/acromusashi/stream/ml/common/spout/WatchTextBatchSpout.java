@@ -115,7 +115,7 @@ public class WatchTextBatchSpout implements IBatchSpout
      * @throws IOException ファイル入出力エラー発生時
      * @throws InterruptedException 割り込み例外発生時
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"rawtypes"})
     protected void checkDataFile(TridentCollector collector) throws IOException,
             InterruptedException
     {

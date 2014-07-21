@@ -499,7 +499,6 @@ public class LofCalculatorTest
      *    condition::データ数100でK値を設定した場合
      *    result::データ数100で算出可能であること
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testCalculateLofNoIntermediate_サンプルデータ算出() throws IOException
     {
@@ -548,7 +547,6 @@ public class LofCalculatorTest
      *    condition::データ数100でK値を設定した場合
      *    result::データ数100で算出可能であること
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testCalculateLofWithoutUpdate_サンプルデータ算出() throws IOException
     {

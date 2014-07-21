@@ -60,7 +60,6 @@ public class KmeansCalculatorTest
      *    condition::3000件のデータを用いて初期化を実施
      *    result::3000件のデータを用いて中心点の初期化が行われること
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreateDataModel_3000件データ計測() throws IOException
     {
@@ -93,7 +92,6 @@ public class KmeansCalculatorTest
      *    condition::10000件のデータを用いて初期化を実施
      *    result::10000件のデータを用いて中心点の初期化が行われること
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreateDataModel_10000件データ計測() throws IOException
     {
@@ -126,7 +124,6 @@ public class KmeansCalculatorTest
      *    condition::20000件のデータを用いて初期化を実施
      *    result::20000件のデータを用いて中心点の初期化が行われること
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreateDataModel_20000件データ計測() throws IOException
     {

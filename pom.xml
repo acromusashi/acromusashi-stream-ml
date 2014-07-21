@@ -75,7 +75,7 @@
     <jdk.version>1.7</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <site.encoding>UTF-8</site.encoding>
-    <storm.version>0.9.1-incubating</storm.version>
+    <storm.version>0.9.2-incubating</storm.version>
     <infinispan.version>6.0.2.Final</infinispan.version>
     <jacoco.include.package>acromusashi.stream.ml.*</jacoco.include.package>
   </properties>
@@ -136,7 +136,7 @@
     <dependency>
       <groupId>jp.co.acroquest.acromusashi</groupId>
       <artifactId>acromusashi-stream</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2</version>
       <exclusions>
         <exclusion>
           <groupId>storm</groupId>
