@@ -20,7 +20,7 @@ acromusashi-stream-ml を用いて開発を行うためには、Mavenのビル�
 <dependency>
   <groupId>jp.co.acroquest.acromusashi</groupId>
   <artifactId>acromusashi-stream-ml</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.3</version>
 </dependency>
 ``` 
 
@@ -280,9 +280,6 @@ this.config.registerSerialization(ApacheLog.class);
 |[ApacheLogSplitFunction](./src/main/java/acromusashi/stream/ml/loganalyze/ApacheLogSplitFunction.java)|JSON形式で表されているApacheのログデータを取得し、Javaのオブジェクトに変換します。|
 |[ChangeFindFunction](./src/main/java/acromusashi/stream/ml/loganalyze/ChangeFindFunction.java)|Apacheのログのレスポンスタイムに対して変化点検出を行います。|
 |[ApacheLogAggregator](./src/main/java/acromusashi/stream/ml/loganalyze/ApacheLogAggregator.java)|Apacheのログの統計を算出します。|
-
-## Javadoc
-[Javadoc](http://acromusashi.github.io/acromusashi-stream-ml/javadoc-0.2.0/)
 
 ## ライセンス
 This software is released under the [MIT License](http://choosealicense.com/licenses/mit/), see LICENSE.txt.
